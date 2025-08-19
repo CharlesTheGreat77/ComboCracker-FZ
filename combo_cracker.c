@@ -240,6 +240,14 @@ static void dump_state_and_combinations_to_model_result(
     char* b = model->result;
     int written;
 
+    written = snprintf(b, remaining_bytes, "No Solution?\n");
+    if((written < 0) || (written >= remaining_bytes)) {
+        // can't add anything more, so return.
+        return;
+    }
+    remaining_bytes -= written;
+    b += written;
+
     // write indices
     written = snprintf(
         b,
@@ -276,13 +284,8 @@ static void dump_state_and_combinations_to_model_result(
 
         // second pin indices
         for(uint8_t i = 0; i < tmp->second_pin_count; ++i) {
-            written = snprintf(
-                b,
-                remaining_bytes,
-                (i == 0) ? "%d" :
-                (i == 3) ? ",\n  %d" :
-                           ", %d",
-                tmp->second_pin_index[i]);
+            written =
+                snprintf(b, remaining_bytes, (i == 0) ? "%d" : ", %d", tmp->second_pin_index[i]);
             if((written < 0) || (written >= remaining_bytes)) {
                 // can't add anything more, so return.
                 return;
@@ -300,13 +303,8 @@ static void dump_state_and_combinations_to_model_result(
 
         // third pin indices
         for(uint8_t i = 0; i < tmp->third_pin_count; ++i) {
-            written = snprintf(
-                b,
-                remaining_bytes,
-                (i == 0) ? "%d" :
-                (i == 3) ? ",\n  %d" :
-                           ", %d",
-                tmp->third_pin_index[i]);
+            written =
+                snprintf(b, remaining_bytes, (i == 0) ? "%d" : ", %d", tmp->third_pin_index[i]);
             if((written < 0) || (written >= remaining_bytes)) {
                 // can't add anything more, so return.
                 return;
@@ -342,13 +340,8 @@ static void dump_state_and_combinations_to_model_result(
 
         // second pin indices
         for(uint8_t i = 0; i < tmp->second_pin_count; ++i) {
-            written = snprintf(
-                b,
-                remaining_bytes,
-                (i == 0) ? "%d" :
-                (i == 3) ? ",\n  %d" :
-                           ", %d",
-                tmp->second_pin_index[i]);
+            written =
+                snprintf(b, remaining_bytes, (i == 0) ? "%d" : ", %d", tmp->second_pin_index[i]);
             if((written < 0) || (written >= remaining_bytes)) {
                 // can't add anything more, so return.
                 return;
@@ -366,13 +359,8 @@ static void dump_state_and_combinations_to_model_result(
 
         // third pin indices
         for(uint8_t i = 0; i < tmp->third_pin_count; ++i) {
-            written = snprintf(
-                b,
-                remaining_bytes,
-                (i == 0) ? "%d" :
-                (i == 3) ? ",\n  %d" :
-                           ", %d",
-                tmp->third_pin_index[i]);
+            written =
+                snprintf(b, remaining_bytes, (i == 0) ? "%d" : ", %d", tmp->third_pin_index[i]);
             if((written < 0) || (written >= remaining_bytes)) {
                 // can't add anything more, so return.
                 return;
@@ -441,7 +429,7 @@ static void
         // * 10 % 4 == 2, so only half the additions (+0, +10, +20, +30) will match the modulo.
         // * Thus, expect to get two values stored.
         // * NOTE: Invalid inputs might store 4 values.
-        for(uint8_t i = 0u; i < 3u; i++) {
+        for(uint8_t i = 0u; i < 4u; i++) {
             if((a % 4u) == remainder) {
                 solution->third_pin_index[solution->third_pin_count++] = a;
             }
@@ -834,7 +822,7 @@ static bool combo_view_cracker_custom_event_callback(uint32_t event, void* conte
             {
                 calculate_combo(model);
                 widget_reset(app->widget_results);
-                widget_add_text_scroll_element(app->widget_results, 0, 0, 128, 64, model->result);
+                widget_add_text_scroll_element(app->widget_results, 2, 2, 124, 60, model->result);
             },
             redraw);
 
